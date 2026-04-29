@@ -1,6 +1,12 @@
 # oven-sh/setup-bun
 
-Hardened GitHub Action by [Chainguard](https://www.chainguard.dev).
+Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/oven-sh/setup-bun](https://github.com/oven-sh/setup-bun).
+
+## Versions
+
+| Version | Tag | Upstream commit |
+|---------|-----|-----------------|
+| v2.2.0 | [`v2.2.0`](https://github.com/chainguard-actions/setup-bun/tree/v2.2.0) | — |
 
 ## Privacy
 
