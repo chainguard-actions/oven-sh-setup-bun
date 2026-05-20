@@ -1,7 +1,0 @@
-{
-  "owner": "oven-sh",
-  "name": "setup-bun",
-  "visibility": "internal",
-  "description": "Set up your GitHub Actions workflow with a specific version of Bun",
-  "block_publish": false
-}
