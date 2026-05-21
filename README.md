@@ -8,7 +8,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
-| v2.2.0 | [`v2.2.0`](https://github.com/chainguard-actions/oven-sh--setup-bun/tree/v2.2.0) | — |
+| v2.2.0 | [`v2.2.0`](https://github.com/chainguard-actions/oven-sh-setup-bun/tree/v2.2.0) | — |
 
 ## Privacy
 
