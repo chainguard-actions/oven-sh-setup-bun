@@ -1,6 +1,6 @@
 # oven-sh/setup-bun
 
-Set up your GitHub Actions workflow with a specific version of Bun
+Download, install, and setup Bun to your path.
 
 Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/oven-sh/setup-bun](https://github.com/oven-sh/setup-bun).
 
