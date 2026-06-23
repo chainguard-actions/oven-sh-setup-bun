@@ -1,0 +1,41 @@
+name: Test version from package.json
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create package.json with packageManager field
+        run: |
+          cat > package.json <<'EOF'
+          {
+            "name": "test-project",
+            "version": "1.0.0",
+            "packageManager": "bun@1.1.0"
+          }
+          EOF
+          cat package.json
+      - id: setup-bun
+        uses: .
+        with:
+          bun-version-file: "package.json"
+      - name: Assert bun-version output is set
+        env:
+          BUN_VERSION: ${{ steps.setup-bun.outputs.bun-version }}
+        run: |
+          echo "bun-version: $BUN_VERSION"
+          if [ -z "$BUN_VERSION" ]; then
+            echo "FAIL: bun-version output is empty"
+            exit 1
+          fi
+          echo "PASS: bun-version=$BUN_VERSION"
+      - name: Assert bun is in PATH
+        run: |
+          if ! command -v bun &>/dev/null; then
+            echo "FAIL: bun not found in PATH"
+            exit 1
+          fi
+          INSTALLED_VERSION=$(bun --version)
+          echo "installed version: $INSTALLED_VERSION"
+          echo "PASS: bun is available"

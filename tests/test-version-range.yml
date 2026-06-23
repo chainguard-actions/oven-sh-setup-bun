@@ -1,0 +1,50 @@
+name: Test version range resolution
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: setup-bun
+        uses: .
+        with:
+          bun-version: "1.x"
+      - name: Assert bun-version output is set and is a 1.x version
+        env:
+          BUN_VERSION: ${{ steps.setup-bun.outputs.bun-version }}
+        run: |
+          echo "bun-version: $BUN_VERSION"
+          if [ -z "$BUN_VERSION" ]; then
+            echo "FAIL: bun-version output is empty"
+            exit 1
+          fi
+          # Version should start with 1.
+          if [[ "$BUN_VERSION" != 1.* ]]; then
+            echo "FAIL: expected a 1.x version, got $BUN_VERSION"
+            exit 1
+          fi
+          echo "PASS: bun-version=$BUN_VERSION is a 1.x version"
+      - name: Assert bun-path output is set
+        env:
+          BUN_PATH: ${{ steps.setup-bun.outputs.bun-path }}
+        run: |
+          echo "bun-path: $BUN_PATH"
+          if [ -z "$BUN_PATH" ]; then
+            echo "FAIL: bun-path output is empty"
+            exit 1
+          fi
+          echo "PASS: bun-path=$BUN_PATH"
+      - name: Assert bun is in PATH and reports a 1.x version
+        run: |
+          if ! command -v bun &>/dev/null; then
+            echo "FAIL: bun not found in PATH"
+            exit 1
+          fi
+          INSTALLED_VERSION=$(bun --version)
+          echo "installed version: $INSTALLED_VERSION"
+          if [[ "$INSTALLED_VERSION" != 1.* ]]; then
+            echo "FAIL: expected a 1.x version, got $INSTALLED_VERSION"
+            exit 1
+          fi
+          echo "PASS: bun version $INSTALLED_VERSION is a 1.x version"

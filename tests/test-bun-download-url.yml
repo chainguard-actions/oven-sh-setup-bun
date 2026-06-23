@@ -1,0 +1,27 @@
+name: Test bun-download-url input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          bun-download-url: "https://github.com/oven-sh/bun/releases/download/bun-v1.1.0/bun-linux-x64.zip"
+      - name: Assert bun-download-url output is set
+        env:
+          ACTUAL: ${{ steps.action.outputs.bun-download-url }}
+        run: |
+          echo "actual bun-download-url: $ACTUAL"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: bun-download-url output is empty"
+            exit 1
+          fi
+          echo "PASS"
+      - name: Assert bun is on PATH
+        run: |
+          which bun
+          bun --version
+          echo "PASS"

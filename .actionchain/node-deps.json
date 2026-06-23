@@ -1,0 +1,19 @@
+{
+  "status": "self_contained",
+  "entries": [
+    {
+      "path": "dist/setup/index.js",
+      "status": "self_contained",
+      "warnings": [
+        "ignored-dynamic-import: Importing \"encoding\" was allowed even though it could not be resolved because dynamic import failures appear to be handled here:"
+      ]
+    },
+    {
+      "path": "dist/cache-save/index.js",
+      "status": "self_contained",
+      "warnings": [
+        "ignored-dynamic-import: Importing \"encoding\" was allowed even though it could not be resolved because dynamic import failures appear to be handled here:"
+      ]
+    }
+  ]
+}
