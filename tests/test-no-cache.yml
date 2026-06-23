@@ -1,0 +1,43 @@
+name: Test no-cache option
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: setup-bun
+        uses: .
+        with:
+          bun-version: latest
+          no-cache: true
+      - name: Assert bun is installed and on PATH
+        run: |
+          echo "which bun: $(which bun)"
+          if ! command -v bun &>/dev/null; then
+            echo "FAIL: bun not found on PATH"
+            exit 1
+          fi
+          bun --version
+          echo "PASS: bun is on PATH"
+      - name: Assert cache-hit output is false when no-cache is true
+        env:
+          CACHE_HIT: ${{ steps.setup-bun.outputs.cache-hit }}
+        run: |
+          echo "cache-hit: $CACHE_HIT"
+          # When no-cache is true, cache-hit should be false or empty
+          if [ "$CACHE_HIT" = "true" ]; then
+            echo "FAIL: cache-hit should not be true when no-cache is enabled"
+            exit 1
+          fi
+          echo "PASS: cache-hit is not true (value: '$CACHE_HIT')"
+      - name: Assert bun-version output is set
+        env:
+          BUN_VERSION: ${{ steps.setup-bun.outputs.bun-version }}
+        run: |
+          echo "bun-version: $BUN_VERSION"
+          if [ -z "$BUN_VERSION" ]; then
+            echo "FAIL: bun-version output is empty"
+            exit 1
+          fi
+          echo "PASS: bun-version=$BUN_VERSION"

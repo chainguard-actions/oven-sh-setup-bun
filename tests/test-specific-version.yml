@@ -1,0 +1,46 @@
+name: Test specific version installation
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: setup-bun
+        uses: .
+        with:
+          bun-version: "1.1.0"
+      - name: Assert bun-version output matches requested version
+        env:
+          BUN_VERSION: ${{ steps.setup-bun.outputs.bun-version }}
+        run: |
+          echo "bun-version: $BUN_VERSION"
+          if [ -z "$BUN_VERSION" ]; then
+            echo "FAIL: bun-version output is empty"
+            exit 1
+          fi
+          # Version should start with 1.1.0
+          if [[ "$BUN_VERSION" != "1.1.0"* ]]; then
+            echo "FAIL: expected version starting with 1.1.0, got $BUN_VERSION"
+            exit 1
+          fi
+          echo "PASS: bun-version=$BUN_VERSION"
+      - name: Assert bun binary reports correct version
+        run: |
+          INSTALLED=$(bun --version)
+          echo "installed bun version: $INSTALLED"
+          if [[ "$INSTALLED" != "1.1.0"* ]]; then
+            echo "FAIL: expected bun version starting with 1.1.0, got $INSTALLED"
+            exit 1
+          fi
+          echo "PASS: bun version matches"
+      - name: Assert bun-revision output is set
+        env:
+          BUN_REVISION: ${{ steps.setup-bun.outputs.bun-revision }}
+        run: |
+          echo "bun-revision: $BUN_REVISION"
+          if [ -z "$BUN_REVISION" ]; then
+            echo "FAIL: bun-revision output is empty"
+            exit 1
+          fi
+          echo "PASS: bun-revision=$BUN_REVISION"
