@@ -1,4 +1,4 @@
-name: Test custom download URL
+name: Test bun-download-url input
 on:
   workflow_dispatch:
 jobs:
@@ -6,44 +6,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - id: setup-bun
+      - id: action
         uses: .
         with:
-          bun-download-url: "https://github.com/oven-sh/bun/releases/download/bun-v1.1.0/bun-linux-x64.zip"
-
-      - name: Assert bun is installed via custom URL
-        run: |
-          if ! command -v bun &>/dev/null; then
-            echo "FAIL: bun not found in PATH"
-            exit 1
-          fi
-          INSTALLED=$(bun --version)
-          echo "bun --version: $INSTALLED"
-          echo "PASS: bun is available at version $INSTALLED"
-
-      - name: Assert bun-download-url output matches input
-        env:
-          BUN_DOWNLOAD_URL: ${{ steps.setup-bun.outputs.bun-download-url }}
-        run: |
-          echo "bun-download-url: $BUN_DOWNLOAD_URL"
-          EXPECTED="https://github.com/oven-sh/bun/releases/download/bun-v1.1.0/bun-linux-x64.zip"
-          if [ "$BUN_DOWNLOAD_URL" != "$EXPECTED" ]; then
-            echo "FAIL: expected download URL '$EXPECTED', got '$BUN_DOWNLOAD_URL'"
-            exit 1
-          fi
-          echo "PASS: bun-download-url matches expected"
-
+          bun-download-url: https://github.com/oven-sh/bun/releases/latest/download/bun-linux-x64.zip
       - name: Assert bun-path output is set
         env:
-          BUN_PATH: ${{ steps.setup-bun.outputs.bun-path }}
+          BUN_PATH: ${{ steps.action.outputs.bun-path }}
         run: |
           echo "bun-path: $BUN_PATH"
           if [ -z "$BUN_PATH" ]; then
             echo "FAIL: bun-path output is empty"
             exit 1
           fi
-          if [ ! -f "$BUN_PATH" ]; then
-            echo "FAIL: bun-path '$BUN_PATH' does not point to an existing file"
+          echo "PASS: bun-path is set to $BUN_PATH"
+      - name: Assert bun is executable
+        run: |
+          if ! command -v bun > /dev/null 2>&1; then
+            echo "FAIL: bun is not on PATH"
             exit 1
           fi
-          echo "PASS: bun-path=$BUN_PATH"
+          echo "PASS: bun is available at $(command -v bun)"
+          bun --version

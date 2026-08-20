@@ -10,7 +10,6 @@ jobs:
         uses: .
         with:
           bun-version: latest
-
       - name: Assert bun-version output is set
         env:
           BUN_VERSION: ${{ steps.setup-bun.outputs.bun-version }}
@@ -21,7 +20,6 @@ jobs:
             exit 1
           fi
           echo "PASS: bun-version=$BUN_VERSION"
-
       - name: Assert bun-path output is set
         env:
           BUN_PATH: ${{ steps.setup-bun.outputs.bun-path }}
@@ -32,33 +30,18 @@ jobs:
             exit 1
           fi
           echo "PASS: bun-path=$BUN_PATH"
-
+      - name: Assert bun is on PATH and executable
+        run: |
+          which bun
+          bun --version
+          echo "PASS: bun is on PATH and executable"
       - name: Assert bun-download-url output is set
         env:
-          BUN_DOWNLOAD_URL: ${{ steps.setup-bun.outputs.bun-download-url }}
+          DOWNLOAD_URL: ${{ steps.setup-bun.outputs.bun-download-url }}
         run: |
-          echo "bun-download-url: $BUN_DOWNLOAD_URL"
-          if [ -z "$BUN_DOWNLOAD_URL" ]; then
+          echo "bun-download-url: $DOWNLOAD_URL"
+          if [ -z "$DOWNLOAD_URL" ]; then
             echo "FAIL: bun-download-url output is empty"
             exit 1
           fi
-          echo "PASS: bun-download-url=$BUN_DOWNLOAD_URL"
-
-      - name: Assert bun is available in PATH
-        run: |
-          which bun
-          if ! command -v bun &>/dev/null; then
-            echo "FAIL: bun not found in PATH"
-            exit 1
-          fi
-          echo "PASS: bun is in PATH"
-
-      - name: Assert bun runs correctly
-        run: |
-          BUN_OUT=$(bun --version)
-          echo "bun --version: $BUN_OUT"
-          if [ -z "$BUN_OUT" ]; then
-            echo "FAIL: bun --version returned empty output"
-            exit 1
-          fi
-          echo "PASS"
+          echo "PASS: bun-download-url=$DOWNLOAD_URL"

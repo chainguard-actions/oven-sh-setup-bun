@@ -14,7 +14,7 @@ runs:
       shell: bash
       run: |
         echo "version=$(bun --version | tr -d '\r\n')" >> $GITHUB_OUTPUT
-        echo "revision=$( (bun --revision 2>/dev/null || true) | tr -d '\r\n')" >> $GITHUB_OUTPUT
+        echo "revision=$(bun --revision 2>/dev/null || true)" >> $GITHUB_OUTPUT
 
     - name: ⚖️ Compare versions
       shell: bash

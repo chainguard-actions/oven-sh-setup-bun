@@ -9,35 +9,8 @@ jobs:
       - id: setup-bun
         uses: .
         with:
-          bun-version: latest
+          bun-version: "1.1.0"
           no-cache: true
-
-      - name: Assert bun is installed despite no-cache
-        run: |
-          if ! command -v bun &>/dev/null; then
-            echo "FAIL: bun not found in PATH"
-            exit 1
-          fi
-          BUN_OUT=$(bun --version)
-          echo "bun --version: $BUN_OUT"
-          if [ -z "$BUN_OUT" ]; then
-            echo "FAIL: bun --version returned empty output"
-            exit 1
-          fi
-          echo "PASS"
-
-      - name: Assert cache-hit output is false when no-cache is true
-        env:
-          CACHE_HIT: ${{ steps.setup-bun.outputs.cache-hit }}
-        run: |
-          echo "cache-hit: $CACHE_HIT"
-          # When no-cache is true, cache-hit should be false or empty
-          if [ "$CACHE_HIT" = "true" ]; then
-            echo "FAIL: expected cache-hit to be false when no-cache=true, got '$CACHE_HIT'"
-            exit 1
-          fi
-          echo "PASS: cache-hit=$CACHE_HIT (not true, as expected)"
-
       - name: Assert bun-version output is set
         env:
           BUN_VERSION: ${{ steps.setup-bun.outputs.bun-version }}
@@ -48,3 +21,19 @@ jobs:
             exit 1
           fi
           echo "PASS: bun-version=$BUN_VERSION"
+      - name: Assert cache-hit output is false when no-cache is true
+        env:
+          CACHE_HIT: ${{ steps.setup-bun.outputs.cache-hit }}
+        run: |
+          echo "cache-hit: $CACHE_HIT"
+          # When no-cache is true, cache-hit should be false or empty
+          if [ "$CACHE_HIT" = "true" ]; then
+            echo "FAIL: expected cache-hit to be false when no-cache=true, got $CACHE_HIT"
+            exit 1
+          fi
+          echo "PASS: cache-hit is not true (no-cache mode)"
+      - name: Assert bun is on PATH and executable
+        run: |
+          which bun
+          bun --version
+          echo "PASS: bun is on PATH and executable"

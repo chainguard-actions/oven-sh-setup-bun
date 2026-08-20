@@ -10,7 +10,6 @@ jobs:
         uses: .
         with:
           bun-version: "1.1.0"
-
       - name: Assert bun-version output matches requested version
         env:
           BUN_VERSION: ${{ steps.setup-bun.outputs.bun-version }}
@@ -20,13 +19,20 @@ jobs:
             echo "FAIL: bun-version output is empty"
             exit 1
           fi
-          # Version should contain 1.1.0
-          if [[ "$BUN_VERSION" != *"1.1.0"* ]]; then
-            echo "FAIL: expected version to contain '1.1.0', got '$BUN_VERSION'"
+          if [ "$BUN_VERSION" != "1.1.0" ]; then
+            echo "FAIL: expected bun-version=1.1.0, got $BUN_VERSION"
             exit 1
           fi
           echo "PASS: bun-version=$BUN_VERSION"
-
+      - name: Assert bun binary reports correct version
+        run: |
+          INSTALLED=$(bun --version)
+          echo "installed version: $INSTALLED"
+          if [ "$INSTALLED" != "1.1.0" ]; then
+            echo "FAIL: expected bun 1.1.0, got $INSTALLED"
+            exit 1
+          fi
+          echo "PASS: bun version is 1.1.0"
       - name: Assert bun-revision output is set
         env:
           BUN_REVISION: ${{ steps.setup-bun.outputs.bun-revision }}
@@ -37,13 +43,3 @@ jobs:
             exit 1
           fi
           echo "PASS: bun-revision=$BUN_REVISION"
-
-      - name: Assert installed bun version matches
-        run: |
-          INSTALLED=$(bun --version)
-          echo "installed bun version: $INSTALLED"
-          if [[ "$INSTALLED" != *"1.1.0"* ]]; then
-            echo "FAIL: expected installed version to contain '1.1.0', got '$INSTALLED'"
-            exit 1
-          fi
-          echo "PASS"

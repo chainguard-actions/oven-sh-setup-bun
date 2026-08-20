@@ -1,4 +1,4 @@
-name: Test version file input
+name: Test version file installation
 on:
   workflow_dispatch:
 jobs:
@@ -6,17 +6,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
       - name: Create .bun-version file
         run: |
-          echo "1.1.3" > .bun-version
-          cat .bun-version
-
+          echo "1.1.3" > "$GITHUB_WORKSPACE/.bun-version"
+          cat "$GITHUB_WORKSPACE/.bun-version"
       - id: setup-bun
         uses: .
         with:
           bun-version-file: ".bun-version"
-
       - name: Assert bun-version output is set
         env:
           BUN_VERSION: ${{ steps.setup-bun.outputs.bun-version }}
@@ -27,13 +24,12 @@ jobs:
             exit 1
           fi
           echo "PASS: bun-version=$BUN_VERSION"
-
-      - name: Assert installed bun version matches version file
+      - name: Assert bun binary reports correct version
         run: |
           INSTALLED=$(bun --version)
-          echo "installed bun version: $INSTALLED"
-          if [[ "$INSTALLED" != *"1.1.3"* ]]; then
-            echo "FAIL: expected installed version to contain '1.1.3', got '$INSTALLED'"
+          echo "installed version: $INSTALLED"
+          if [ "$INSTALLED" != "1.1.3" ]; then
+            echo "FAIL: expected bun 1.1.3, got $INSTALLED"
             exit 1
           fi
-          echo "PASS"
+          echo "PASS: bun version matches .bun-version file"
