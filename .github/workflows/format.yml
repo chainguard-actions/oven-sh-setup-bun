@@ -1,0 +1,32 @@
+name: autofix.ci # Must be named this for autofix.ci to work
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: 🛠️ Setup Bun
+        uses: ./
+
+      - name: 📦 Install Dependencies
+        run: bun install
+
+      - name: 🧹 Format
+        run: |
+          bun run format
+          bun run build
+
+      - name: 💾 Commit
+        uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27 # v1.3.2

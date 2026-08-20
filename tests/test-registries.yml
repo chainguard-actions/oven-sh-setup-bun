@@ -5,8 +5,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - id: setup-bun
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
         uses: .
         with:
           bun-version: latest
@@ -14,18 +14,21 @@ jobs:
             https://registry.npmjs.org/
       - name: Assert bun-version output is set
         env:
-          BUN_VERSION: ${{ steps.setup-bun.outputs.bun-version }}
-          BUN_PATH: ${{ steps.setup-bun.outputs.bun-path }}
+          BUN_VERSION: ${{ steps.action.outputs.bun-version }}
+          BUN_PATH: ${{ steps.action.outputs.bun-path }}
         run: |
           echo "bun-version: $BUN_VERSION"
           echo "bun-path: $BUN_PATH"
           if [ -z "$BUN_VERSION" ]; then
-            echo "FAIL: bun-version output should not be empty"
+            echo "FAIL: bun-version output is empty"
             exit 1
           fi
-          echo "PASS: bun-version is set"
+          if [ -z "$BUN_PATH" ]; then
+            echo "FAIL: bun-path output is empty"
+            exit 1
+          fi
+          echo "PASS"
       - name: Assert bun is executable
         run: |
-          which bun
           bun --version
           echo "PASS: bun is on PATH and executable"
