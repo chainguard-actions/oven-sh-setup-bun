@@ -30,5 +30,6 @@ jobs:
           echo "PASS"
       - name: Assert bun is executable
         run: |
+          which bun
           bun --version
           echo "PASS: bun is on PATH and executable"

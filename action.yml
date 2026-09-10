@@ -57,7 +57,6 @@ outputs:
     description: If the version of Bun was cached.
 
 runs:
-  pre: chainguard-phonehome.js
   using: "node24"
   main: "dist/setup/index.js"
   post: "dist/cache-save/index.js"
