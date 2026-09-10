@@ -1,4 +1,4 @@
-name: Test registry-url input
+name: Test registry-url input (deprecated)
 on:
   workflow_dispatch:
 jobs:
@@ -14,18 +14,24 @@ jobs:
       - name: Assert bun-version output is set
         env:
           BUN_VERSION: ${{ steps.action.outputs.bun-version }}
+          BUN_PATH: ${{ steps.action.outputs.bun-path }}
         run: |
           echo "bun-version: $BUN_VERSION"
+          echo "bun-path: $BUN_PATH"
           if [ -z "$BUN_VERSION" ]; then
             echo "FAIL: bun-version output is empty"
             exit 1
           fi
-          echo "PASS: bun-version is set to $BUN_VERSION"
-      - name: Assert bun is executable
-        run: |
-          if ! command -v bun > /dev/null 2>&1; then
-            echo "FAIL: bun is not on PATH"
+          if [ -z "$BUN_PATH" ]; then
+            echo "FAIL: bun-path output is empty"
             exit 1
           fi
-          echo "PASS: bun is available at $(command -v bun)"
+          echo "PASS: bun installed with registry-url configured"
+      - name: Assert bun is executable
+        run: |
+          if ! command -v bun &>/dev/null; then
+            echo "FAIL: bun not found in PATH"
+            exit 1
+          fi
           bun --version
+          echo "PASS: bun is executable"
