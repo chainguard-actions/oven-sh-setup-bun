@@ -1,0 +1,37 @@
+name: Test basic usage - install latest Bun
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: setup-bun
+        uses: .
+        with:
+          bun-version: latest
+      - name: Assert bun-version output is set
+        env:
+          BUN_VERSION: ${{ steps.setup-bun.outputs.bun-version }}
+        run: |
+          echo "bun-version: $BUN_VERSION"
+          if [ -z "$BUN_VERSION" ]; then
+            echo "FAIL: bun-version output is empty"
+            exit 1
+          fi
+          echo "PASS: bun-version is '$BUN_VERSION'"
+      - name: Assert bun-revision output is set
+        env:
+          BUN_REVISION: ${{ steps.setup-bun.outputs.bun-revision }}
+        run: |
+          echo "bun-revision: $BUN_REVISION"
+          if [ -z "$BUN_REVISION" ]; then
+            echo "FAIL: bun-revision output is empty"
+            exit 1
+          fi
+          echo "PASS: bun-revision is '$BUN_REVISION'"
+      - name: Assert bun is on PATH and executable
+        run: |
+          which bun
+          bun --version
+          echo "PASS: bun is available on PATH"

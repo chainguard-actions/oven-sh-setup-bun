@@ -1,15 +1,53 @@
-# oven-sh/setup-bun
+# setup-bun
 
-Download, install, and setup Bun to your path.
+Download, install, and setup [Bun](https://bun.sh) in GitHub Actions.
 
-Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/oven-sh/setup-bun](https://github.com/oven-sh/setup-bun).
+## Usage
 
-## Versions
+```yaml
+- uses: oven-sh/setup-bun@v1
+  with:
+    bun-version: latest
+```
 
-| Version | Tag | Upstream commit |
-|---------|-----|-----------------|
-| v2.1.2 | [`v2.1.2`](https://github.com/chainguard-actions/oven-sh-setup-bun/tree/v2.1.2) | [`3d26778`](https://github.com/oven-sh/setup-bun/commit/3d267786b128fe76c2f16a390aa2448b815359f3) |
-| v2.2.0 | [`v2.2.0`](https://github.com/chainguard-actions/oven-sh-setup-bun/tree/v2.2.0) | [`0c5077e`](https://github.com/oven-sh/setup-bun/commit/0c5077e51419868618aeaa5fe8019c62421857d6) |
+### Using a custom NPM registry
+
+```yaml
+- uses: oven-sh/setup-bun@v1
+  with:
+    registry-url: "https://npm.pkg.github.com/"
+    scope: "@foo"
+```
+
+If you need to authenticate with a private registry, you can set the `BUN_AUTH_TOKEN` environment variable.
+
+```yaml
+- name: Install Dependencies
+  env:
+    BUN_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  run: bun install --frozen-lockfile
+```
+
+### Node.js not needed
+
+In most cases, you shouldn't need to use the [setup-node](https://github.com/actions/setup-node) GitHub Action.
+
+## Inputs
+
+| Name           | Description                                        | Default     | Examples                        |
+| -------------- | -------------------------------------------------- | ----------- | ------------------------------- |
+| `bun-version`  | The version of Bun to download and install.        | `latest`    | `canary`, `1.0.0`, `1.0.x`      |
+| `registry-url` | Registry URL where some private package is stored. | `undefined` | `"https://npm.pkg.github.com/"` |
+| `scope`        | Scope for private packages.                        | `undefined` | `"@foo"`, `"@orgname"`          |
+| `no-cache`     | Disable caching of the downloaded executable.      | `false`     | `true`, `false`                 |
+
+## Outputs
+
+| Name           | Description                                | Example          |
+| -------------- | ------------------------------------------ | ---------------- |
+| `cache-hit`    | If the Bun executable was read from cache. | `true`           |
+| `bun-version`  | The output from `bun --version`.           | `1.0.0`          |
+| `bun-revision` | The output from `bun --revision`.          | `1.0.0+822a00c4` |
 
 ## Privacy
 
